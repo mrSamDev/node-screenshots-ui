@@ -151,7 +151,7 @@ export default function LandingPage() {
         </Container>
         <History history={history} />
       </div>
-      <Grid style={{ position: "fixed", bottom: 0, height: 40, backgroundColor: "#2ECCC0", width: "100%", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Grid style={{ position: "fixed", bottom: 0, height: 40, backgroundColor: "#2ECCC0", width: "100%", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 3000 }}>
         <Typography variant="body1">To clear history, Close and open a new browser tab</Typography>
       </Grid>
     </React.Fragment>
