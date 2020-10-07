@@ -18,7 +18,7 @@ switch (env) {
     break;
 
   case production:
-    config = { domainPrefix: "prod", ...config };
+    config = { domainPrefix: "prod", ...config, apiUrl: "https://desolate-plains-28889.herokuapp.com/" };
     break;
   default:
     break;
