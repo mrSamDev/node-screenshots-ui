@@ -4,7 +4,6 @@ import Header from "../molecule/Header";
 import {
   Paper,
   Grid,
-  TextField,
   Button,
   Typography,
   Divider,
@@ -17,22 +16,24 @@ import {
 import Container from "../atoms/Container";
 import { Controller, useForm, FormProvider } from "react-hook-form";
 import Camera from "@material-ui/icons/Camera";
-import Warning from "@material-ui/icons/Warning";
 import History from "./History";
 import actions from "../../utils/getScreenShot";
 import sessionStorage from "../../utils/sessionsStorage";
 import SnackBar from "../molecule/SnackBar";
 import ViewPort from "./ViewportView";
-
+import UrlField from "../atoms/UrlField";
 
 const trimText = (string) => {
   const length = 80;
-  if (string.length > length) return string.substring(0, length - 3)
+  if (string.length > length) return string.substring(0, length - 3);
   return string;
 };
 
 const nameGenerator = (url) => {
-  return trimText (url).replaceAll("/", "").replaceAll(":", "").replaceAll(".", "");
+  return trimText(url)
+    .replaceAll("/", "")
+    .replaceAll(":", "")
+    .replaceAll(".", "");
 };
 
 const extensionToFormat = {
@@ -46,14 +47,15 @@ export default function LandingPage() {
   const [history, setHistory] = React.useState([]);
   const [error, setError] = React.useState(false);
 
+
   React.useEffect(() => {
     const historyValue = sessionStorage.get("fullPageHistory", true) || [];
     setHistory(historyValue.map((i) => ({ ...i, loading: false })) || []);
   }, []);
 
-  const { register, handleSubmit, errors, control, watch ,reset} = useForm({
+  const { register, handleSubmit, errors, control, watch, reset } = useForm({
     defaultValues: {
-      url: "https://reactjs.org/docs/create-a-new-react-app.html",
+      url: "https://salty-badlands-37808.herokuapp.com/",
       dimensions: {
         width: 1366,
         height: 768,
@@ -87,7 +89,7 @@ export default function LandingPage() {
       actions.getScreenShot(options).then(() => {
         handleHistoryMutator(url, { ...options, loading: false });
       });
-      reset({...rest,url:""})
+      reset({ ...rest, url: "" });
 
       setLoading((prev) => !prev);
     } catch (error) {
@@ -115,19 +117,15 @@ export default function LandingPage() {
             >
               <Grid item xs={12}>
                 <Paper elevation={2}>
-                  <TextField
-                    disabled={loading}
-                    inputRef={register({ required: true })}
-                    error={Boolean(errors.email)}
-                    variant="outlined"
-                    required
-                    type="text"
-                    fullWidth
-                    label="URL"
-                    placeholder="http://www.example.com/"
-                    name="url"
-                    InputLabelProps={{ shrink: true }}
-                  />
+                  <FormProvider
+                    register={register}
+                    errors={errors}
+                    control={control}
+                    watch={watch}
+                    loading={loading}
+                  >
+                    <UrlField />
+                  </FormProvider>
                 </Paper>
               </Grid>
               <Grid item xs={12}>
@@ -224,5 +222,3 @@ export default function LandingPage() {
     </React.Fragment>
   );
 }
-
-
