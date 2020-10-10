@@ -9,8 +9,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 const UrlField = () => {
   const [preview, setPreview] = React.useState(false);
   const { register, errors, loading, watch } = useFormContext();
-
   const url = watch("url");
+
 
   return (
     <React.Fragment>
@@ -42,6 +42,7 @@ const UrlField = () => {
           endAdornment: (
             <InputAdornment position="start">
               <IconButton
+              size="small"
                 onClick={() => setPreview((prev) => !prev)}
                 disabled={!Boolean(url)}
               >

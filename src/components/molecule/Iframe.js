@@ -5,6 +5,8 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Fade from "@material-ui/core/Fade";
 import IconButton from "@material-ui/core/IconButton";
 import Close from "@material-ui/icons/Close";
+import useMediaQuery from "@material-ui/core/useMediaQuery"
+import {useTheme} from "@material-ui/core/styles"
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: "flex",
@@ -15,6 +17,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: "2px solid #000",
     boxShadow: theme.shadows[5],
+    height: "80vh",
+    position: "relative",
   },
   closeIcon: {
     position: "absolute",
@@ -29,6 +33,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function IframeModal(props) {
   const classes = useStyles();
+  const theme = useTheme();
+  const downSm = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <div>
@@ -45,10 +51,7 @@ export default function IframeModal(props) {
         }}
       >
         <Fade in={Boolean(props.open)}>
-          <div
-            style={{ width: "60vw", height: "80vh", position: "relative" }}
-            className={classes.paper}
-          >
+          <div className={classes.paper} style={downSm?{width:"80%"}:{width:"60vw"}}>
             <iframe
               id="iframe"
               src={props.url}
@@ -56,7 +59,7 @@ export default function IframeModal(props) {
               allowfullscreen
             ></iframe>
             <div className={classes.closeIcon}>
-              <IconButton onClick={props.handleClose}>
+              <IconButton size="small" onClick={props.handleClose}>
                 <Close />
               </IconButton>
             </div>
