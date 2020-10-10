@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Camera from "@material-ui/icons/Camera";
+import EmptyState from "../molecule/EmptyState";
 import actions from "../../utils/getScreenShot";
 
 const StyledTableRow = withStyles((theme) => ({
@@ -21,7 +22,6 @@ const StyledTableRow = withStyles((theme) => ({
     },
   },
 }))(TableRow);
-// common.black
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.primary.main,
@@ -42,7 +42,7 @@ const useStyles = makeStyles({
 });
 
 const columns = [
-  { id: "url", label: "Url", minWidth: 100 },
+  { id: "url", label: "URL", minWidth: 100 },
   {
     id: "dimensions",
     label: "Dimensions",
@@ -71,41 +71,80 @@ const History = ({ history = [] }) => {
     <Container>
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
-          <Table stickyHeader={Boolean(history && history.length)} aria-label="sticky table">
+          <Table
+            stickyHeader={Boolean(history && history.length)}
+            aria-label="sticky table"
+          >
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <StyledTableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                  <StyledTableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                  >
                     {column.label}
                   </StyledTableCell>
                 ))}
-                <StyledTableCell key={"download"} align={"right"} style={{ width: 20 }}></StyledTableCell>
+                <StyledTableCell
+                  key={"download"}
+                  align={"right"}
+                  style={{ width: 20 }}
+                ></StyledTableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {history.map((row) => {
-                return (
-                  <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
+              {history && history.length ? (
+                history.map((row) => {
+                  return (
+                    <StyledTableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={row.code}
+                    >
+                      {columns.map((column) => {
+                        const value = row[column.id];
 
-                      const isObject = typeof value === "object";
+                        const isObject = typeof value === "object";
 
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {isObject ? Object.keys(value).map((key) => <Typography variant="body1">{`${key}: ${value[key]}`}</Typography>) : <Typography variant="body1">{value}</Typography>}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell key={"download-cell"} align={"right"} style={{ width: 20 }}>
-                      <IconButton disabled={loading} onClick={() => reDownLoad(row)}>
-                        {loading === row.url ? <CircularProgress size={15} /> : <Camera />}
-                      </IconButton>
-                    </TableCell>
-                  </StyledTableRow>
-                );
-              })}
+                        return (
+                          <TableCell key={column.id} align={column.align}>
+                            {isObject ? (
+                              Object.keys(value).map((key) => (
+                                <Typography variant="body1">{`${key}: ${value[key]}`}</Typography>
+                              ))
+                            ) : (
+                              <Typography variant="body1">{value}</Typography>
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                      <TableCell
+                        key={"download-cell"}
+                        align={"right"}
+                        style={{ width: 20 }}
+                      >
+                        <IconButton
+                          disabled={loading}
+                          onClick={() => reDownLoad(row)}
+                        >
+                          {loading === row.url ? (
+                            <CircularProgress size={15} />
+                          ) : (
+                            <Camera />
+                          )}
+                        </IconButton>
+                      </TableCell>
+                    </StyledTableRow>
+                  );
+                })
+              ) : (
+                <TableCell colSpan={12} key={"empty"}>
+                  <EmptyState disablePaper />
+                </TableCell>
+              )}
             </TableBody>
           </Table>
         </TableContainer>

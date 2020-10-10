@@ -2,7 +2,7 @@ import config from "../config";
 
 const getScreenShot = async (options) => {
   try {
-    console.log("options: ", options);
+
     let URL = config.apiUrl + "/screen-shot";
     let response = await fetch(URL, {
       method: "POST",
@@ -12,7 +12,8 @@ const getScreenShot = async (options) => {
 
     if (response.status !== 200) throw new Error("Something went wrong");
 
-    console.log("response: ", response);
+    if(response.error) throw new Error(response.message);
+
     const blob = await response.blob();
     const a = document.createElement("a");
     document.body.appendChild(a);
@@ -24,7 +25,6 @@ const getScreenShot = async (options) => {
     window.URL.revokeObjectURL(url);
     return true;
   } catch (error) {
-    console.log("error: ", error);
     throw error;
   }
 };
