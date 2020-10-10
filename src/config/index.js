@@ -5,7 +5,7 @@ const production = "production";
 const env = process.env.NODE_ENV || development;
 
 let config = {
-  appName: "fullPager",
+  appName: "Capture d'écran",
 };
 
 switch (env) {

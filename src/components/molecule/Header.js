@@ -27,7 +27,7 @@ const Header = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
-        <Camera style={{marginRight:10}}/>  Full Pager
+        <Camera style={{marginRight:10}}/>Capture d'écran
         </Typography>
       </Toolbar>
     </AppBar>

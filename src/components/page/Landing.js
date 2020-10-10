@@ -51,7 +51,7 @@ export default function LandingPage() {
     setHistory(historyValue.map((i) => ({ ...i, loading: false })) || []);
   }, []);
 
-  const { register, handleSubmit, errors, control, watch } = useForm({
+  const { register, handleSubmit, errors, control, watch ,reset} = useForm({
     defaultValues: {
       url: "https://reactjs.org/docs/create-a-new-react-app.html",
       dimensions: {
@@ -87,6 +87,8 @@ export default function LandingPage() {
       actions.getScreenShot(options).then(() => {
         handleHistoryMutator(url, { ...options, loading: false });
       });
+      reset({...rest,url:""})
+
       setLoading((prev) => !prev);
     } catch (error) {
       setError(`${error}`);

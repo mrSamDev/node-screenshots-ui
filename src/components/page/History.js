@@ -115,9 +115,11 @@ const History = ({ history = [] }) => {
                         );
                       })}
                       <TableCell key={"download-cell"} align={"right"} style={{ width: 20 }}>
+                      <Tooltip placement="bottom" title={"Capture"}>
                         <IconButton disabled={loading} onClick={() => reDownLoad(row)}>
                           {row.loading || loading === row.url ? <CircularProgress size={15} /> : <Camera />}
                         </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </StyledTableRow>
                   );

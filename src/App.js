@@ -7,7 +7,7 @@ import theme from "./theme";
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
-      <Page title="FullPager">
+      <Page title="Vue">
         <LandingPage />
       </Page>
     </MuiThemeProvider>
