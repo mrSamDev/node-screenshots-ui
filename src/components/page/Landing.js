@@ -24,8 +24,15 @@ import sessionStorage from "../../utils/sessionsStorage";
 import SnackBar from "../molecule/SnackBar";
 import ViewPort from "./ViewportView";
 
+
+const trimText = (string) => {
+  const length = 80;
+  if (string.length > length) return string.substring(0, length - 3)
+  return string;
+};
+
 const nameGenerator = (url) => {
-  return url.replaceAll("/", "").replaceAll(":", "").replaceAll(".", "");
+  return trimText (url).replaceAll("/", "").replaceAll(":", "").replaceAll(".", "");
 };
 
 const extensionToFormat = {
