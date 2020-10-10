@@ -53,6 +53,18 @@
   color: white;
   border-radius: 10px;
   padding: 7px;
+}
 
-  /* font-size: 10px; */
+.fixedWarning {
+  position: "fixed";
+  bottom: 0;
+  height: 50;
+  background-color: #2eccc0;
+  width: "100%";
+  color: "#fff";
+  display: "flex";
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  flex-direction: column;
 }

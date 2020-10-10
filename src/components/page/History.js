@@ -2,6 +2,7 @@ import React from "react";
 import Container from "../atoms/Container";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -57,6 +58,12 @@ const columns = [
   },
 ];
 
+const trimText = (string) => {
+  const length = 50;
+  if (string.length > length) return string.substring(0, length - 3) + "...";
+  return string;
+};
+
 const History = ({ history = [] }) => {
   const [loading, setLoading] = React.useState(null);
   const classes = useStyles();
@@ -71,26 +78,15 @@ const History = ({ history = [] }) => {
     <Container>
       <Paper className={classes.root}>
         <TableContainer className={classes.container}>
-          <Table
-            stickyHeader={Boolean(history && history.length)}
-            aria-label="sticky table"
-          >
+          <Table stickyHeader={Boolean(history && history.length)} aria-label="sticky table">
             <TableHead>
               <TableRow>
                 {columns.map((column) => (
-                  <StyledTableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
+                  <StyledTableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
                     {column.label}
                   </StyledTableCell>
                 ))}
-                <StyledTableCell
-                  key={"download"}
-                  align={"right"}
-                  style={{ width: 20 }}
-                ></StyledTableCell>
+                <StyledTableCell key={"download"} align={"right"} style={{ width: 20 }}></StyledTableCell>
               </TableRow>
             </TableHead>
 
@@ -98,12 +94,7 @@ const History = ({ history = [] }) => {
               {history && history.length ? (
                 history.map((row) => {
                   return (
-                    <StyledTableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                    >
+                    <StyledTableRow hover role="checkbox" tabIndex={-1} key={row.code}>
                       {columns.map((column) => {
                         const value = row[column.id];
 
@@ -112,29 +103,20 @@ const History = ({ history = [] }) => {
                         return (
                           <TableCell key={column.id} align={column.align}>
                             {isObject ? (
-                              Object.keys(value).map((key) => (
-                                <Typography variant="body1">{`${key}: ${value[key]}`}</Typography>
-                              ))
+                              Object.keys(value).map((key) => <Typography variant="body1">{`${key}: ${value[key]}`}</Typography>)
                             ) : (
-                              <Typography variant="body1">{value}</Typography>
+                              <React.Fragment>
+                                <Tooltip placement="bottom-start" title={value}>
+                                <Typography variant="body1">{trimText(value)}</Typography>
+                                </Tooltip>
+                              </React.Fragment>
                             )}
                           </TableCell>
                         );
                       })}
-                      <TableCell
-                        key={"download-cell"}
-                        align={"right"}
-                        style={{ width: 20 }}
-                      >
-                        <IconButton
-                          disabled={loading}
-                          onClick={() => reDownLoad(row)}
-                        >
-                          {loading === row.url ? (
-                            <CircularProgress size={15} />
-                          ) : (
-                            <Camera />
-                          )}
+                      <TableCell key={"download-cell"} align={"right"} style={{ width: 20 }}>
+                        <IconButton disabled={loading} onClick={() => reDownLoad(row)}>
+                          {row.loading || loading === row.url ? <CircularProgress size={15} /> : <Camera />}
                         </IconButton>
                       </TableCell>
                     </StyledTableRow>

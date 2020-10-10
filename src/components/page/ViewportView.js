@@ -21,7 +21,7 @@ const ViewPort = () => {
                 render={({ value, onChange }) => {
                   return (
                     <FormControl required disabled={loading} fullWidth variant="outlined">
-                      <InputLabel>Pdf format</InputLabel>
+                      <InputLabel>Format</InputLabel>
                       <Select value={value} onChange={onChange} label="format">
                         <MenuItem value={"A4"}>A4</MenuItem>
                         <MenuItem value={"A3"}>A3</MenuItem>

@@ -5,6 +5,7 @@ import { Paper, Grid, TextField, Button, Typography, Divider, FormControl, Input
 import Container from "../atoms/Container";
 import { Controller, useForm, FormProvider } from "react-hook-form";
 import Camera from "@material-ui/icons/Camera";
+import Warning from "@material-ui/icons/Warning";
 import History from "./History";
 import actions from "../../utils/getScreenShot";
 import sessionStorage from "../../utils/sessionsStorage";
@@ -27,9 +28,8 @@ export default function LandingPage() {
   const [error, setError] = React.useState(false);
 
   React.useEffect(() => {
-    const historyValue = sessionStorage.get("fullPageHistory", true);
-
-    setHistory(historyValue || []);
+    const historyValue = (sessionStorage.get("fullPageHistory", true))||[];
+    setHistory(historyValue.map((i) => ({ ...i, loading: false })) || []);
   }, []);
 
   const { register, handleSubmit, errors, control, watch } = useForm({
@@ -43,27 +43,26 @@ export default function LandingPage() {
     },
   });
 
+  const handleHistoryMutator = (url, payload) => {
+    const historyClone = [...history];
+    const index = historyClone.findIndex((i) => i.url === url);
+    if (index > -1) historyClone[index] = { ...historyClone[index], ...payload };
+    else historyClone.unshift(payload);
+    setHistory(historyClone);
+    sessionStorage.set("fullPageHistory", historyClone);
+  };
+
   const submit = async ({ url, ...rest }) => {
     try {
       setError(false);
       setLoading((prev) => !prev);
       const name = nameGenerator(url);
-      let options = {
-        
-        url,
-        ...rest,
-        name,
-        format: extensionToFormat[rest.extension],
-      };
-      console.log('options: ', options);
-      await actions.getScreenShot(options);
+      let options = { url, ...rest, name, format: extensionToFormat[rest.extension] };
+      handleHistoryMutator(url, { ...options, loading: true });
+      actions.getScreenShot(options).then(() => {
+        handleHistoryMutator(url, { ...options, loading: false });
+      });
       setLoading((prev) => !prev);
-      const historyClone = [...history];
-      const index = historyClone.findIndex((i) => i.url === url);
-      if (index > -1) historyClone[index] = { ...historyClone[index], ...options };
-      else historyClone.unshift(options);
-      setHistory(historyClone);
-      sessionStorage.set("fullPageHistory", historyClone);
     } catch (error) {
       setError(`${error}`);
     }
@@ -121,6 +120,7 @@ export default function LandingPage() {
                   </Button>
                 </Paper>
               </Grid>
+              
               <Grid item xs={12}>
                 <Divider />
               </Grid>
@@ -129,11 +129,12 @@ export default function LandingPage() {
         </Container>
         <History history={history} />
       </div>
+   
       <Grid
         style={{
           position: "fixed",
           bottom: 0,
-          height: 40,
+          height: 50,
           backgroundColor: "#2ECCC0",
           width: "100%",
           color: "#fff",
@@ -141,9 +142,11 @@ export default function LandingPage() {
           alignItems: "center",
           justifyContent: "center",
           zIndex: 3000,
+          flexDirection:"column",
+          padding:15
         }}
       >
-        <Typography variant="body1">To clear history, Close and open a new browser tab</Typography>
+      <Typography variant="body1">To clear history, Close and open a new browser tab</Typography> 
       </Grid>
     </React.Fragment>
   );
@@ -151,11 +154,15 @@ export default function LandingPage() {
 
 /*
  • in mobile make the dimensions in one row -- DONE
- • PDF format missing
+ • PDF format missing -- DONE
  • empty state for table -- DONE
  • "url" should be all caps - URL -- DONE
- • the app was not working for me on mobile, it was stuck in processing.
+ • the app was not working for me on mobile, it was stuck in processing. -- DONE
  • I wouldn't keep the loader if the screenshot is taking a lot of time, I would add an entry immediately to the table and show a processing tag.
  • preview before download would be a good feature
  • what happens if we refresh the window when screenshot is provessing?
 */
+
+
+       
+        // 
